@@ -11,9 +11,27 @@ REM Get the directory where the script is located
 set SCRIPT_DIR=%~dp0
 cd /d "%SCRIPT_DIR%"
 
+echo Checking Backend Virtual Environment...
+echo ----------------------------------------
+if not exist "backend\venv" (
+    echo Creating virtual environment...
+    cd backend
+    python -m venv venv
+    cd ..
+    echo Virtual environment created!
+)
+
+echo Installing/Updating Backend Dependencies...
+cd backend
+call venv\Scripts\activate.bat
+pip install -r requirements.txt >nul 2>&1
+cd ..
+echo Backend dependencies ready!
+
+echo.
 echo Starting Backend Server...
 echo ----------------------------------------
-start "Backend Server" cmd /k "cd backend && python app.py"
+start "Backend Server" cmd /k "cd backend && venv\Scripts\activate.bat && python app.py"
 
 timeout /t 3 /nobreak >nul
 

@@ -25,9 +25,24 @@ DEPLOY_DIR="/var/www/e-commerce"
 
 echo -e "${BLUE}📁 Working directory: $SCRIPT_DIR${NC}"
 
-# Step 1: Install backend dependencies
-echo -e "\n${BLUE}📦 Installing backend dependencies...${NC}"
+# Step 1: Create and setup virtual environment
+echo -e "\n${BLUE}📦 Setting up Python virtual environment...${NC}"
 cd "$BACKEND_DIR"
+
+# Create virtual environment if it doesn't exist
+if [ ! -d "venv" ]; then
+    echo "Creating virtual environment..."
+    python3 -m venv venv
+    echo -e "${GREEN}✅ Virtual environment created${NC}"
+else
+    echo "Virtual environment already exists"
+fi
+
+# Activate virtual environment
+source venv/bin/activate
+
+# Install backend dependencies
+echo -e "\n${BLUE}📦 Installing backend dependencies...${NC}"
 if [ -f "requirements.txt" ]; then
     pip install -r requirements.txt
     echo -e "${GREEN}✅ Backend dependencies installed${NC}"
@@ -87,7 +102,14 @@ fi
 echo -e "\n${BLUE}🐍 Starting backend server...${NC}"
 cd "$DEPLOY_DIR/backend"
 
-# Install gunicorn if not present
+# Create virtual environment in deployment directory if it doesn't exist
+if [ ! -d "venv" ]; then
+    echo "Creating virtual environment in deployment directory..."
+    python3 -m venv venv
+fi
+
+# Activate and install gunicorn
+source venv/bin/activate
 pip install gunicorn
 
 # Create systemd service file
@@ -101,7 +123,7 @@ User=www-data
 Group=www-data
 WorkingDirectory=$DEPLOY_DIR/backend
 Environment="PATH=$DEPLOY_DIR/backend/venv/bin"
-ExecStart=/usr/bin/gunicorn --workers 4 --bind 127.0.0.1:5000 app:app
+ExecStart=$DEPLOY_DIR/backend/venv/bin/gunicorn --workers 4 --bind 127.0.0.1:5000 app:app
 
 [Install]
 WantedBy=multi-user.target
