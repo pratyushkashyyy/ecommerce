@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
+import { API_ENDPOINTS } from '../config/api';
 
 const TermsAndConditions = () => {
     const [content, setContent] = useState('');
@@ -12,7 +13,7 @@ const TermsAndConditions = () => {
 
     const fetchContent = async () => {
         try {
-            const response = await fetch('http://localhost:5000/api/settings');
+            const response = await fetch(API_ENDPOINTS.SETTINGS);
             if (response.ok) {
                 const data = await response.json();
                 setContent(data.terms_and_conditions || 'Terms and Conditions content not available.');

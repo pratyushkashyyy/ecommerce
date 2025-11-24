@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { API_ENDPOINTS, API_BASE_URL, getAdminProductUrl } from '../../config/api';
 
 function ProductManagement() {
     const [products, setProducts] = useState([]);
@@ -24,7 +25,7 @@ function ProductManagement() {
 
     const fetchProducts = async () => {
         try {
-            const response = await fetch('http://localhost:5000/api/admin/products', {
+            const response = await fetch(API_ENDPOINTS.ADMIN_PRODUCTS, {
                 credentials: 'include'
             });
 
@@ -64,7 +65,7 @@ function ProductManagement() {
             const formDataUpload = new FormData();
             formDataUpload.append('image', file);
 
-            const response = await fetch('http://localhost:5000/api/admin/upload-image', {
+            const response = await fetch(API_ENDPOINTS.ADMIN_UPLOAD_IMAGE, {
                 method: 'POST',
                 credentials: 'include',
                 body: formDataUpload
@@ -72,7 +73,7 @@ function ProductManagement() {
 
             if (response.ok) {
                 const data = await response.json();
-                const fullImageUrl = `http://localhost:5000${data.image_url}`;
+                const fullImageUrl = `${API_BASE_URL}${data.image_url}`;
                 setFormData({ ...formData, image_url: fullImageUrl });
                 setImagePreview(fullImageUrl);
             } else {
@@ -91,8 +92,8 @@ function ProductManagement() {
         e.preventDefault();
 
         const url = editingProduct
-            ? `http://localhost:5000/api/admin/products/${editingProduct.id}`
-            : 'http://localhost:5000/api/admin/products';
+            ? getAdminProductUrl(editingProduct.id)
+            : API_ENDPOINTS.ADMIN_PRODUCTS;
 
         const method = editingProduct ? 'PUT' : 'POST';
 
@@ -119,7 +120,7 @@ function ProductManagement() {
         if (!confirm('Are you sure you want to delete this product?')) return;
 
         try {
-            const response = await fetch(`http://localhost:5000/api/admin/products/${id}`, {
+            const response = await fetch(getAdminProductUrl(id), {
                 method: 'DELETE',
                 credentials: 'include'
             });

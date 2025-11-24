@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { API_ENDPOINTS } from '../../config/api';
 
 function AdminDashboard({ admin, onLogout }) {
     const [stats, setStats] = useState({
@@ -17,7 +18,7 @@ function AdminDashboard({ admin, onLogout }) {
 
     const fetchStats = async () => {
         try {
-            const response = await fetch('http://localhost:5000/api/admin/dashboard/stats', {
+            const response = await fetch(API_ENDPOINTS.ADMIN_DASHBOARD_STATS, {
                 credentials: 'include'
             });
 
@@ -34,7 +35,7 @@ function AdminDashboard({ admin, onLogout }) {
 
     const handleLogout = async () => {
         try {
-            await fetch('http://localhost:5000/api/admin/logout', {
+            await fetch(API_ENDPOINTS.ADMIN_LOGOUT, {
                 method: 'POST',
                 credentials: 'include'
             });

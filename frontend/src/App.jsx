@@ -9,6 +9,7 @@ import Checkout from './pages/Checkout';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import RefundPolicy from './pages/RefundPolicy';
 import TermsAndConditions from './pages/TermsAndConditions';
+import { API_ENDPOINTS } from './config/api';
 
 // Admin Pages
 import AdminLogin from './pages/admin/AdminLogin';
@@ -29,7 +30,7 @@ function App() {
 
     const checkAdminAuth = async () => {
         try {
-            const response = await fetch('http://localhost:5000/api/admin/check-auth', {
+            const response = await fetch(API_ENDPOINTS.ADMIN_CHECK_AUTH, {
                 credentials: 'include'
             });
 

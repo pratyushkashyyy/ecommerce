@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { API_ENDPOINTS } from '../../config/api';
 
 function AdminLogin({ onLogin }) {
     const [username, setUsername] = useState('');
@@ -14,7 +15,7 @@ function AdminLogin({ onLogin }) {
         setLoading(true);
 
         try {
-            const response = await fetch('http://localhost:5000/api/admin/login', {
+            const response = await fetch(API_ENDPOINTS.ADMIN_LOGIN, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

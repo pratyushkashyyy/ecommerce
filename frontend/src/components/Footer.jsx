@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Mail, Phone, MapPin } from 'lucide-react';
+import { API_ENDPOINTS } from '../config/api';
 
 const Footer = () => {
     const [settings, setSettings] = useState({
@@ -17,7 +18,7 @@ const Footer = () => {
 
     const fetchSettings = async () => {
         try {
-            const response = await fetch('http://localhost:5000/api/settings');
+            const response = await fetch(API_ENDPOINTS.SETTINGS);
             if (response.ok) {
                 const data = await response.json();
                 setSettings({

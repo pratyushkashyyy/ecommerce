@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { API_ENDPOINTS } from '../../config/api';
 
 function WebsiteSettings() {
     const [settings, setSettings] = useState({
@@ -26,7 +27,7 @@ function WebsiteSettings() {
 
     const fetchSettings = async () => {
         try {
-            const response = await fetch('http://localhost:5000/api/admin/settings', {
+            const response = await fetch(API_ENDPOINTS.ADMIN_SETTINGS, {
                 credentials: 'include'
             });
 
@@ -49,7 +50,7 @@ function WebsiteSettings() {
         setMessage('');
 
         try {
-            const response = await fetch('http://localhost:5000/api/admin/settings', {
+            const response = await fetch(API_ENDPOINTS.ADMIN_SETTINGS, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

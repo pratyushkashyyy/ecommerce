@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
+import { API_ENDPOINTS } from '../config/api';
 
 const PrivacyPolicy = () => {
     const [content, setContent] = useState('');
@@ -12,7 +13,7 @@ const PrivacyPolicy = () => {
 
     const fetchContent = async () => {
         try {
-            const response = await fetch('http://localhost:5000/api/settings');
+            const response = await fetch(API_ENDPOINTS.SETTINGS);
             if (response.ok) {
                 const data = await response.json();
                 setContent(data.privacy_policy || 'Privacy Policy content not available.');

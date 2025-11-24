@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { API_ENDPOINTS, getAdminOrderStatusUrl } from '../../config/api';
 
 function OrderManagement() {
     const [orders, setOrders] = useState([]);
@@ -13,7 +14,7 @@ function OrderManagement() {
 
     const fetchOrders = async () => {
         try {
-            const response = await fetch('http://localhost:5000/api/admin/orders', {
+            const response = await fetch(API_ENDPOINTS.ADMIN_ORDERS, {
                 credentials: 'include'
             });
 
@@ -32,7 +33,7 @@ function OrderManagement() {
 
     const updateOrderStatus = async (orderId, newStatus) => {
         try {
-            const response = await fetch(`http://localhost:5000/api/admin/orders/${orderId}/status`, {
+            const response = await fetch(getAdminOrderStatusUrl(orderId), {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -231,8 +232,8 @@ function OrderManagement() {
                                             key={status}
                                             onClick={() => updateOrderStatus(selectedOrder.id, status)}
                                             className={`px-4 py-2 rounded-lg font-medium transition ${selectedOrder.status === status
-                                                    ? 'bg-gradient-to-r from-purple-600 to-pink-500 text-white'
-                                                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                                                ? 'bg-gradient-to-r from-purple-600 to-pink-500 text-white'
+                                                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                                                 }`}
                                         >
                                             {status}
