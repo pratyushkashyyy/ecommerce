@@ -9,6 +9,8 @@ import Checkout from './pages/Checkout';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import RefundPolicy from './pages/RefundPolicy';
 import TermsAndConditions from './pages/TermsAndConditions';
+import Contact from './pages/Contact';
+import About from './pages/About';
 import { API_ENDPOINTS } from './config/api';
 
 // Admin Pages
@@ -152,6 +154,8 @@ function App() {
                                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                                 <Route path="/refund-policy" element={<RefundPolicy />} />
                                 <Route path="/terms-and-conditions" element={<TermsAndConditions />} />
+                                <Route path="/contact" element={<Contact />} />
+                                <Route path="/about" element={<About />} />
                             </Routes>
                         </main>
 
