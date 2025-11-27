@@ -1,18 +1,51 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { ShoppingCart, Store, Search } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { API_ENDPOINTS } from '../config/api';
 
 const Navbar = ({ cartCount, toggleCart }) => {
+    const [settings, setSettings] = useState({
+        website_name: 'ToyWonderland',
+        logo_url: ''
+    });
+
+    useEffect(() => {
+        fetchSettings();
+    }, []);
+
+    const fetchSettings = async () => {
+        try {
+            const response = await fetch(API_ENDPOINTS.SETTINGS);
+            if (response.ok) {
+                const data = await response.json();
+                setSettings({
+                    website_name: data.website_name || 'ToyWonderland',
+                    logo_url: data.logo_url || ''
+                });
+            }
+        } catch (err) {
+            console.error('Error fetching settings:', err);
+        }
+    };
+
     return (
         <nav className="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-gray-100">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between h-20 items-center">
                     <Link to="/" className="flex items-center gap-3 group">
-                        <div className="bg-primary-100 p-2 rounded-xl group-hover:rotate-12 transition-transform">
-                            <Store className="h-8 w-8 text-primary-600" />
-                        </div>
+                        {settings.logo_url ? (
+                            <img
+                                src={settings.logo_url}
+                                alt={settings.website_name}
+                                className="h-12 w-auto object-contain group-hover:scale-105 transition-transform"
+                            />
+                        ) : (
+                            <div className="bg-primary-100 p-2 rounded-xl group-hover:rotate-12 transition-transform">
+                                <Store className="h-8 w-8 text-primary-600" />
+                            </div>
+                        )}
                         <span className="text-2xl font-extrabold text-gray-900 tracking-tight">
-                            Toy<span className="text-primary-600">Wonderland</span>
+                            {settings.website_name}
                         </span>
                     </Link>
 

@@ -28,7 +28,7 @@ instance/
 .webassets-cache
 
 # Database
-*.db
+toys.db
 *.sqlite
 *.sqlite3
 

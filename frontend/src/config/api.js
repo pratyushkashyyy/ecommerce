@@ -37,6 +37,7 @@ export const API_ENDPOINTS = {
     ADMIN_PRODUCTS: buildApiUrl('api/admin/products'),
     ADMIN_ORDERS: buildApiUrl('api/admin/orders'),
     ADMIN_UPLOAD_IMAGE: buildApiUrl('api/admin/upload-image'),
+    ADMIN_UPLOAD_LOGO: buildApiUrl('api/admin/upload-logo'),
 };
 
 // Helper function for dynamic endpoints (e.g., with IDs)

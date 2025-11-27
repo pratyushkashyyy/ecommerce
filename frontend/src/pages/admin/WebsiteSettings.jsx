@@ -5,6 +5,7 @@ import { API_ENDPOINTS } from '../../config/api';
 function WebsiteSettings() {
     const [settings, setSettings] = useState({
         website_name: '',
+        logo_url: '',
         company_address: '',
         company_ein: '',
         company_phone: '',
@@ -19,6 +20,9 @@ function WebsiteSettings() {
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [message, setMessage] = useState('');
+    const [logoFile, setLogoFile] = useState(null);
+    const [logoPreview, setLogoPreview] = useState('');
+    const [uploadingLogo, setUploadingLogo] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -34,6 +38,9 @@ function WebsiteSettings() {
             if (response.ok) {
                 const data = await response.json();
                 setSettings(data);
+                if (data.logo_url) {
+                    setLogoPreview(data.logo_url);
+                }
             } else if (response.status === 401) {
                 navigate('/admin/login');
             }
@@ -41,6 +48,60 @@ function WebsiteSettings() {
             console.error('Error fetching settings:', err);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleLogoChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            if (!file.type.startsWith('image/')) {
+                setMessage('Please select an image file');
+                return;
+            }
+            if (file.size > 5 * 1024 * 1024) {
+                setMessage('Logo file size must be less than 5MB');
+                return;
+            }
+            setLogoFile(file);
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setLogoPreview(reader.result);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const handleLogoUpload = async () => {
+        if (!logoFile) return;
+
+        setUploadingLogo(true);
+        setMessage('');
+
+        try {
+            const formData = new FormData();
+            formData.append('logo', logoFile);
+
+            const response = await fetch(API_ENDPOINTS.ADMIN_UPLOAD_LOGO, {
+                method: 'POST',
+                credentials: 'include',
+                body: formData,
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                setSettings({ ...settings, logo_url: data.logo_url });
+                setLogoPreview(data.logo_url);
+                setMessage('Logo uploaded successfully!');
+                setTimeout(() => setMessage(''), 3000);
+            } else {
+                const error = await response.json();
+                setMessage(error.error || 'Failed to upload logo');
+            }
+        } catch (err) {
+            console.error('Error uploading logo:', err);
+            setMessage('Error uploading logo');
+        } finally {
+            setUploadingLogo(false);
         }
     };
 
@@ -177,6 +238,45 @@ function WebsiteSettings() {
                                     onChange={(e) => setSettings({ ...settings, company_address: e.target.value })}
                                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                                 />
+                            </div>
+
+                            {/* Logo Upload Section */}
+                            <div className="md:col-span-2 border-t pt-4 mt-4">
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Website Logo
+                                </label>
+                                <div className="flex flex-col md:flex-row gap-4 items-start">
+                                    {logoPreview && (
+                                        <div className="flex-shrink-0">
+                                            <img
+                                                src={logoPreview}
+                                                alt="Logo Preview"
+                                                className="h-20 w-auto object-contain border border-gray-300 rounded-lg p-2 bg-white"
+                                            />
+                                        </div>
+                                    )}
+                                    <div className="flex-grow">
+                                        <input
+                                            type="file"
+                                            accept="image/*"
+                                            onChange={handleLogoChange}
+                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                        />
+                                        <p className="text-xs text-gray-500 mt-1">
+                                            Recommended: PNG or SVG with transparent background. Max size: 5MB
+                                        </p>
+                                        {logoFile && (
+                                            <button
+                                                type="button"
+                                                onClick={handleLogoUpload}
+                                                disabled={uploadingLogo}
+                                                className="mt-2 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                                            >
+                                                {uploadingLogo ? 'Uploading...' : 'Upload Logo'}
+                                            </button>
+                                        )}
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

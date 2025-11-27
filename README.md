@@ -15,8 +15,9 @@ A full-featured e-commerce web application with admin panel, built with React an
 - 🔐 Secure admin authentication
 - 📦 Product management (CRUD operations)
 - 📸 Image upload for products
+- 🎨 Logo upload and customization
 - 📋 Order management and tracking
-- ⚙️ Website settings configuration
+- ⚙️ Website settings configuration (name, logo, contact info)
 - 📊 Dashboard with statistics
 - 📝 Content management (policies, about us, etc.)
 
@@ -92,9 +93,9 @@ sudo certbot --nginx -d yourdomain.com
 
 ## 📚 Documentation
 
-- **[DEPLOYMENT.md](DEPLOYMENT.md)** - Complete deployment guide
-- **[PRE-PRODUCTION-CHECKLIST.md](PRE-PRODUCTION-CHECKLIST.md)** - Pre-launch checklist
-- **[ADMIN_PANEL_README.md](ADMIN_PANEL_README.md)** - Admin panel documentation
+- **[LOGO_FEATURE.md](LOGO_FEATURE.md)** - Website name and logo customization
+- **[IMPLEMENTATION_SUMMARY.md](IMPLEMENTATION_SUMMARY.md)** - Recent feature implementations
+- **[TESTING_GUIDE.md](TESTING_GUIDE.md)** - Testing guide for new features
 
 ## 🔒 Security
 
@@ -183,15 +184,18 @@ Access the admin panel at `/admin/login`
 
 ## 🚀 Deployment
 
-### Option 1: Automated Deployment
+### Production Deployment
 
 ```bash
+chmod +x start.sh
 sudo ./start.sh
 ```
 
-### Option 2: Manual Deployment
-
-See [DEPLOYMENT.md](DEPLOYMENT.md) for detailed instructions.
+This will:
+- Build the frontend
+- Start the backend with Gunicorn
+- Configure Nginx
+- Set up systemd services
 
 ## 🔄 Updating the Application
 

@@ -49,6 +49,7 @@ def create_app():
         # Initialize default website settings
         default_settings = {
             'website_name': 'UNICORNKART LLC',
+            'logo_url': '',
             'company_address': '30 N GOULD ST STE 4000, SHERIDAN, WY 82801, United States',
             'company_ein': '38-4362997',
             'company_phone': '+1 (555) 123-4567',

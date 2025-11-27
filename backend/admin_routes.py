@@ -130,6 +130,76 @@ def upload_image():
     except Exception as e:
         return jsonify({'error': f'Upload failed: {str(e)}'}), 500
 
+# Logo Upload Route
+@admin_api.route('/upload-logo', methods=['POST'])
+@admin_required
+def upload_logo():
+    if 'logo' not in request.files:
+        return jsonify({'error': 'No logo file provided'}), 400
+    
+    file = request.files['logo']
+    
+    if file.filename == '':
+        return jsonify({'error': 'No file selected'}), 400
+    
+    if not allowed_file(file.filename):
+        return jsonify({'error': 'Invalid file type. Allowed: PNG, JPG, JPEG, GIF, WEBP'}), 400
+    
+    try:
+        # Check file size
+        file.seek(0, os.SEEK_END)
+        file_size = file.tell()
+        file.seek(0)
+        
+        if file_size > MAX_FILE_SIZE:
+            return jsonify({'error': 'File too large. Maximum size is 5MB'}), 400
+        
+        # Generate secure filename
+        original_filename = secure_filename(file.filename)
+        file_extension = original_filename.rsplit('.', 1)[1].lower()
+        unique_filename = f"logo_{secrets.token_hex(8)}.{file_extension}"
+        
+        # Create upload directory for logos
+        logo_folder = 'uploads/logos'
+        upload_path = os.path.join(os.path.dirname(__file__), logo_folder)
+        os.makedirs(upload_path, exist_ok=True)
+        
+        # Save file
+        file_path = os.path.join(upload_path, unique_filename)
+        file.save(file_path)
+        
+        # Optimize image (logos should be smaller)
+        try:
+            img = Image.open(file_path)
+            # Preserve transparency for logos
+            # Resize if too large (max 500px width for logos)
+            max_width = 500
+            if img.width > max_width:
+                ratio = max_width / img.width
+                new_size = (max_width, int(img.height * ratio))
+                img = img.resize(new_size, Image.Resampling.LANCZOS)
+            # Save optimized image
+            if img.mode == 'RGBA':
+                img.save(file_path, 'PNG', optimize=True)
+            else:
+                if img.mode in ('P',):
+                    img = img.convert('RGB')
+                img.save(file_path, optimize=True, quality=90)
+        except Exception as e:
+            print(f"Logo optimization error: {e}")
+        
+        # Return URL
+        logo_url = f"/uploads/logos/{unique_filename}"
+        
+        return jsonify({
+            'message': 'Logo uploaded successfully',
+            'logo_url': logo_url,
+            'filename': unique_filename
+        }), 201
+        
+    except Exception as e:
+        return jsonify({'error': f'Upload failed: {str(e)}'}), 500
+
 # Product Management Routes
 @admin_api.route('/products', methods=['GET'])
 @admin_required
