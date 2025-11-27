@@ -1,24 +1,34 @@
 # Quick Deploy Guide
 
+## Directory Structure
+
+Your setup:
+- **Git Repository**: `~/e-commerce` (or `/root/e-commerce`) - Your source code
+- **Deployment Directory**: `/var/www/e-commerce` - Where the website runs from
+
 ## Usage
 
 ### Deploy Changes
 
-Whenever you make changes to your code and want to deploy them:
+**IMPORTANT**: Run this from your Git repository directory (home directory), NOT from `/var/www/e-commerce`
 
 ```bash
-# On your server
-cd /var/www/e-commerce
+# Navigate to your Git repo (home directory)
+cd ~/e-commerce
+
+# Run deployment script
 chmod +x quick-deploy.sh
 ./quick-deploy.sh
 ```
 
 This will:
-1. Pull latest changes from Git (if applicable)
-2. Rebuild the frontend
-3. Stop existing backend
-4. Start backend with gunicorn on port 5000
-5. Reload Nginx
+1. Pull latest changes from Git
+2. Build frontend in your repo
+3. Copy built files to `/var/www/e-commerce`
+4. Copy backend files to `/var/www/e-commerce`
+5. Stop existing backend
+6. Start backend with gunicorn on port 5000 in `/var/www/e-commerce`
+7. Reload Nginx
 
 ### Stop Backend
 
